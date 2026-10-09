@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Website Detection System | Cybersecurity Project</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Background Grid Decoration -->
+    <div class="cyber-grid-overlay"></div>
+    <div class="glow-orb glow-top"></div>
+    <div class="glow-orb glow-bottom"></div>
+
+    <!-- Header Navigation -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fa-solid fa-shield-halved logo-icon"></i>
+                <span class="logo-text">Cyber<span class="highlight">Guard</span> AI</span>
+            </div>
+            <div class="project-tag">
+                <span class="badge bca-badge"><i class="fa-solid fa-graduation-cap"></i> BCA Cybersecurity Project</span>
+            </div>
+            <nav class="nav-links">
+                <a href="#analyzer"><i class="fa-solid fa-magnifying-glass"></i> Scanner</a>
+                <a href="#features"><i class="fa-solid fa-microchip"></i> Features</a>
+                <a href="#security-tips"><i class="fa-solid fa-shield-virus"></i> Security Tips</a>
+                <a href="#about"><i class="fa-solid fa-circle-info"></i> About</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="main-wrapper">
+        <!-- Hero Section -->
+        <section class="hero-section" id="analyzer">
+            <div class="hero-header">
+                <div class="status-pill">
+                    <span class="pulse-dot"></span> ML Heuristic Engine Active
+                </div>
+                <h1 class="project-title">Phishing Website Detection System</h1>
+                <p class="project-description">
+                    Check whether a website URL is legitimate or potentially phishing using intelligent machine learning heuristic analysis.
+                </p>
+            </div>
+
+            <!-- Detection Scanner Card -->
+            <div class="scanner-card">
+                <form id="urlForm" class="scanner-form" onsubmit="event.preventDefault(); scanUrl();">
+                    <div class="input-container">
+                        <i class="fa-solid fa-link input-icon"></i>
+                        <input 
+                            type="text" 
+                            id="urlInput" 
+                            name="url" 
+                            placeholder="Enter or paste website URL (e.g., https://example.com or suspicious link)..." 
+                            autocomplete="off" 
+                            spellcheck="false"
+                            required
+                        >
+                        <button type="button" id="clearBtn" class="clear-btn" title="Clear input" onclick="clearInput()">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                    <button type="submit" id="checkBtn" class="btn-primary">
+                        <span class="btn-text"><i class="fa-solid fa-shield-check"></i> Check URL</span>
+                        <span class="btn-loader" style="display: none;">
+                            <i class="fa-solid fa-spinner fa-spin"></i> Analyzing...
+                        </span>
+                    </button>
+                </form>
+
+                <!-- Sample Test URLs for Quick Demonstration -->
+                <div class="sample-urls-container">
+                    <span class="sample-label"><i class="fa-solid fa-flask"></i> Quick Test Examples:</span>
+                    <button type="button" class="btn-sample sample-legit" onclick="setSample('https://www.google.com')">
+                        <i class="fa-solid fa-check"></i> Legit: Google
+                    </button>
+                    <button type="button" class="btn-sample sample-legit" onclick="setSample('https://github.com/torvalds/linux')">
+                        <i class="fa-solid fa-check"></i> Legit: GitHub
+                    </button>
+                    <button type="button" class="btn-sample sample-phish" onclick="setSample('http://192.168.1.105/login-account/verify.html')">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Phish: IP Address
+                    </button>
+                    <button type="button" class="btn-sample sample-phish" onclick="setSample('http://paypal-verification-center.security-update.com/signin')">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Phish: Fake Subdomain
+                    </button>
+                </div>
+
+                <!-- Error Toast/Alert Notification -->
+                <div id="errorAlert" class="alert-box alert-error" style="display: none;">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span id="errorMessage">Invalid URL provided</span>
+                </div>
+            </div>
+
+            <!-- Result Section (Hidden until scan completes) -->
+            <div id="resultSection" class="result-section" style="display: none;">
+                <!-- Main Verdict Card -->
+                <div id="verdictCard" class="verdict-card">
+                    <div class="verdict-header">
+                        <div class="verdict-badge-wrapper">
+                            <span id="verdictIcon" class="verdict-icon"></span>
+                            <div>
+                                <span class="verdict-subtitle">VERDICT ANALYSIS</span>
+                                <h2 id="verdictText" class="verdict-title">--</h2>
+                            </div>
+                        </div>
+                        <div class="confidence-box">
+                            <span class="confidence-label">ML Confidence Score</span>
+                            <div class="confidence-value-wrapper">
+                                <span id="confidenceValue" class="confidence-value">0%</span>
+                            </div>
+                            <div class="confidence-meter">
+                                <div id="confidenceBar" class="confidence-meter-fill"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="verdict-summary">
+                        <div class="summary-item">
+                            <span class="summary-label">Scanned URL:</span>
+                            <code id="scannedUrlText" class="summary-url">--</code>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Risk Assessment:</span>
+                            <span id="riskLevelBadge" class="badge">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature Analysis Section -->
+                <div class="features-wrapper" id="features">
+                    <div class="section-heading">
+                        <div class="heading-badge"><i class="fa-solid fa-brain"></i> Extraction Engine</div>
+                        <h3>Deep URL Feature Inspection</h3>
+                        <p>Lexical and structural indicators examined by the classification model</p>
+                    </div>
+
+                    <div id="featureGrid" class="feature-grid">
+                        <!-- Populated dynamically via script.js -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Security Best Practices Section -->
+        <section class="security-tips-section" id="security-tips">
+            <div class="section-heading">
+                <div class="heading-badge"><i class="fa-solid fa-shield-halved"></i> Cybersecurity Awareness</div>
+                <h2>How to Stay Safe from Phishing Attacks</h2>
+                <p>Essential security practices to safeguard personal credentials and sensitive data.</p>
+            </div>
+
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <div class="tip-icon-box safe-color">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <h4>Verify HTTPS & Certificate</h4>
+                    <p>Always inspect the padlock icon in the browser address bar. Legitimate organizations secure their web traffic using valid SSL/TLS certificates.</p>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-icon-box warn-color">
+                        <i class="fa-solid fa-spell-check"></i>
+                    </div>
+                    <h4>Inspect Domain Spellings</h4>
+                    <p>Watch for typosquatting tricks such as <code>paypa1.com</code> or <code>rnicrosoft.com</code>. Phishers register visually identical lookalikes.</p>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-icon-box danger-color">
+                        <i class="fa-solid fa-network-wired"></i>
+                    </div>
+                    <h4>Beware of IP Addresses</h4>
+                    <p>Legitimate public portals never ask you to authenticate on raw numeric IP addresses like <code>http://192.168.1.1/login</code>.</p>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-icon-box safe-color">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <h4>Ignore Artificial Urgency</h4>
+                    <p>Phishing campaigns frequently use frightening messages ("Account Suspended within 24 hours!") to manipulate victims into hasty decisions.</p>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-icon-box warn-color">
+                        <i class="fa-solid fa-link-slash"></i>
+                    </div>
+                    <h4>Unmask Shortened Links</h4>
+                    <p>Avoid entering sensitive credentials after clicking links shortened with services like bit.ly, which obscure the genuine destination.</p>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-icon-box danger-color">
+                        <i class="fa-solid fa-key"></i>
+                    </div>
+                    <h4>Enable Multi-Factor Auth (MFA)</h4>
+                    <p>Even if an attacker captures your password via a counterfeit site, strong MFA prevents unauthorized account compromise.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Project Section -->
+        <section class="about-section" id="about">
+            <div class="about-card">
+                <div class="about-content">
+                    <span class="about-tag"><i class="fa-solid fa-code"></i> Academic Project</span>
+                    <h3>About the Phishing Detection System</h3>
+                    <p>
+                        This application is designed as a complete <strong>BCA Cybersecurity Mini Project</strong>. It evaluates URLs by analyzing 13 key structural, lexical, and behavioral heuristics extracted directly from the URL string.
+                    </p>
+                    <div class="tech-stack-tags">
+                        <span><i class="fa-brands fa-python"></i> Python</span>
+                        <span><i class="fa-solid fa-server"></i> Flask</span>
+                        <span><i class="fa-solid fa-chart-line"></i> Scikit-Learn</span>
+                        <span><i class="fa-solid fa-tree"></i> Random Forest</span>
+                        <span><i class="fa-brands fa-html5"></i> HTML5</span>
+                        <span><i class="fa-brands fa-css3-alt"></i> CSS3</span>
+                        <span><i class="fa-brands fa-js"></i> JavaScript</span>
+                    </div>
+                </div>
+                <div class="about-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">13</div>
+                        <div class="stat-label">Extracted Features</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">0ms</div>
+                        <div class="stat-label">Network Latency (Safe Offline Analysis)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Client Safety (No Link Visits)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <div class="logo">
+                    <i class="fa-solid fa-shield-halved logo-icon"></i>
+                    <span class="logo-text">Cyber<span class="highlight">Guard</span> AI</span>
+                </div>
+                <p class="footer-desc">BCA Cybersecurity Mini Project • Phishing Website Detection System</p>
+            </div>
+            <div class="footer-credits">
+                <p>&copy; 2026 Phishing Website Detection System. Academic Demonstration.</p>
+                <p class="safety-note"><i class="fa-solid fa-shield"></i> Static feature inspection only. Links are analyzed without external network traversal.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
+

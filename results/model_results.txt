@@ -1,0 +1,77 @@
+============================================================
+PHISHING WEBSITE DETECTION SYSTEM - EVALUATION REPORT
+BCA Cybersecurity Mini Project
+Generated: 2026-10-09 10:01:11
+============================================================
+
+1. DATASET OVERVIEW
+------------------------------------------------------------
+Total Samples         : 210
+Legitimate URLs (0)   : 100 (47.62%)
+Phishing URLs (1)     : 110 (52.38%)
+Model Features: 12 (HTTPS is displayed but excluded from the verdict)
+
+2. MODEL TRAINING CONFIGURATION
+------------------------------------------------------------
+Classifier Algorithm  : Random Forest Classifier (Scikit-Learn)
+Estimators (Trees)    : 100
+Maximum Tree Depth    : 10
+Random State Seed     : 42
+Train / Test Partition: 80% Train (168 samples) / 20% Test (42 samples)
+Cross-Check Baseline  : Logistic Regression (Accuracy: 100.00%)
+
+3. PERFORMANCE METRICS (ON UNSEEN TEST SET)
+------------------------------------------------------------
+Accuracy              : 100.00%
+Precision             : 100.00%
+Recall                : 100.00%
+F1-Score              : 100.00%
+
+4. CONFUSION MATRIX
+------------------------------------------------------------
+                    Predicted Legit (0)    Predicted Phishing (1)
+Actual Legit (0)            20                     0           
+Actual Phishing (1)         0                      22          
+
+True Negatives  (TN)  : 20 (Legitimate correctly identified)
+False Positives (FP)  : 0 (Legitimate misclassified as Phishing)
+False Negatives (FN)  : 0 (Phishing misclassified as Legitimate)
+True Positives  (TP)  : 22 (Phishing correctly identified)
+
+5. DETAILED CLASSIFICATION REPORT
+------------------------------------------------------------
+                precision    recall  f1-score   support
+
+Legitimate (0)       1.00      1.00      1.00        20
+  Phishing (1)       1.00      1.00      1.00        22
+
+      accuracy                           1.00        42
+     macro avg       1.00      1.00      1.00        42
+  weighted avg       1.00      1.00      1.00        42
+
+
+6. FEATURE IMPORTANCE RANKING
+------------------------------------------------------------
+
+Feature Importance Ranking:
+----------------------------------------
+ 1. url_length                   : 0.3560
+ 2. count_hyphens                : 0.2870
+ 3. suspicious_word_count        : 0.1425
+ 4. prefix_suffix_hyphen         : 0.1163
+ 5. count_subdomains             : 0.0480
+ 6. count_dots                   : 0.0249
+ 7. has_ip_address               : 0.0063
+ 8. count_digits                 : 0.0061
+ 9. is_shortened                 : 0.0054
+10. count_special_chars          : 0.0039
+11. has_double_slash_redirect    : 0.0020
+12. has_at_symbol                : 0.0018
+
+
+============================================================
+CONCLUSION
+The Random Forest model classifies this curated demonstration dataset
+using structural anomalies, suspicious keywords, and domain patterns.
+These metrics should not be treated as real-world phishing-detection performance.
+============================================================
